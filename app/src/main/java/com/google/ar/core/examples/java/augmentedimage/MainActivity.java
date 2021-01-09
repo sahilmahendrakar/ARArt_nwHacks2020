@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+//TODO: Implement DatabaseReference and StorageReference, load all items in database reference, database reference should hold uri of corresponding image in firebase storage
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button drawButton;
     private boolean drawButtonVisible = false;
+
+//    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         initializeSceneView();
 
         setupDrawButton();
+
+        setupDatabase();
     }
 
     private void setupDrawButton() {
@@ -87,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); //opens drawactivity
             }
         });
+    }
+
+    private void setupDatabase() {
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override

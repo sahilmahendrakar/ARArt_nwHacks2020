@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/augmented_images.iml" filepath="$PROJECT_DIR$/.idea/modules/augmented_images.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/augmented_images.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/augmented_images.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ARArt_nwHacks2020.iml" filepath="$PROJECT_DIR$/.idea/modules/ARArt_nwHacks2020.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ARArt_nwHacks2020.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ARArt_nwHacks2020.app.iml" />
     </modules>
   </component>
 </project>
