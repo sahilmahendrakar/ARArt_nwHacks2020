@@ -19,19 +19,20 @@
         android:theme="@style/Theme.AppCompat.Light"
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".DrawActivity"></activity>
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true"
-            android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name=".MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".DrawActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="locked"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <!--
  This tag indicates that this application requires ARCore.  This results in the Google Play
              Store downloading and installing ARCore along with the application.
@@ -39,6 +40,12 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" /> <!-- The API key for Google Maps-based APIs. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/maps_api_key" />
     </application>
 
 </manifest>
