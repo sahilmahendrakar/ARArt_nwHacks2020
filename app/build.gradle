@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+// Set the properties within `local.properties` into a `Properties` class so
+// that values within `local.properties` (e.g. Maps API key) are accessible in
+// this file.
+Properties properties = new Properties()
+if (rootProject.file("local.properties").exists()) {
+    properties.load(rootProject.file("local.properties").newDataInputStream())
+}
+def mapsApiKey = properties.getProperty("MAPS_API_KEY", "")
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -11,6 +20,9 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
+        // Read the API key from local.properties into R.string.maps_api_key
+        resValue "string", "maps_api_key", mapsApiKey
     }
 
     buildTypes {
@@ -28,6 +40,7 @@ android {
 dependencies {
     // ARCore library
     implementation 'com.google.ar:core:1.2.0'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
