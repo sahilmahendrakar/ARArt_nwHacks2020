@@ -1,7 +1,11 @@
 package com.google.ar.core.examples.java.augmentedimage;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,5 +64,10 @@ public class MapActivity extends AppCompatActivity
         // [END_EXCLUDE]
     }
     // [END maps_marker_on_map_ready_add_marker]
+
+    public void goCamera(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }
 // [END maps_marker_on_map_ready]

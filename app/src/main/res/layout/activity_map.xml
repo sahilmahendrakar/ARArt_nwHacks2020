@@ -12,21 +12,20 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="355dp"
         android:layout_height="650dp"
-        android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
         tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
+        android:onClick="goCamera"
+        android:text="Go to camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteY="10dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
