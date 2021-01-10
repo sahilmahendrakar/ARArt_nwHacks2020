@@ -31,7 +31,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,15 +63,17 @@ public class MapActivity extends AppCompatActivity
 
     private DatabaseReference mDatabase;
     private static final String TAG = MapActivity.class.getSimpleName();
-//    private LatLng defaultLocation; //= new LatLng(40.8075, -73.9626);
+    private LatLng defaultLocation = new LatLng(40.8075, -73.9626);
     private Location mCurrentLocation = new Location("");
     private static final int DEFAULT_ZOOM = 15;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
     private GoogleMap map;
     private boolean requestingLocationUpdates = true;
+    private Location lastKnownLocation;
+    private static final String KEY_LOCATION = "location";
 
-    private FusedLocationProviderClient fusedLocationClient;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     // [START_EXCLUDE]
     // [START maps_marker_get_map_async]
@@ -89,7 +93,11 @@ public class MapActivity extends AppCompatActivity
         mCurrentLocation.setLatitude(40.8075);
         mCurrentLocation.setLongitude(-73.9626);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (savedInstanceState != null) {
+            lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+        }
 
     }
     // [END maps_marker_get_map_async]
@@ -196,7 +204,7 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-//                updateMapCamera();
+        updateMapCamera();
 //                double latitude=location.getLatitude();
 //                double longitude=location.getLongitude();
 //                String msg="New Latitude: "+latitude + "New Longitude: "+longitude;
@@ -271,6 +279,41 @@ public class MapActivity extends AppCompatActivity
         }
         // [END maps_check_location_permission]
     }
+
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (!permissionDenied) {
+                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.getResult();
+                            if (lastKnownLocation != null) {
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(lastKnownLocation.getLatitude(),
+                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            }
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            map.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                            map.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage(), e);
+        }
+    }
+
 
 //    @Override
 //    protected void onResume() {
