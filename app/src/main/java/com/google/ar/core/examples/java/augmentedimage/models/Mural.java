@@ -3,14 +3,16 @@ package com.google.ar.core.examples.java.augmentedimage.models;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Mural {
+    String name;
     String refImg;
     String arImg;
     Location location;
 
-    public Mural(String refImg, String arImg, Location loc) {
+    public Mural(String name, String refImg, String arImg, Location location) {
+        this.name = name;
         this.refImg = refImg;
         this.arImg = arImg;
-        this.location = loc;
+        this.location = location;
     }
 
     public String getRefImg() {
@@ -35,5 +37,13 @@ public class Mural {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

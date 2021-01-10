@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d(TAG, "Database value: " + snapshot.getValue());
+
+
             }
 
             @Override
@@ -119,9 +121,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Mural test = new Mural("hi2", "bye2", new Location(5.0f, 10.0f));
-        DatabaseReference testRef = imageDatabase.push();
-        testRef.setValue(test);
+        //Pushes to database
+//        Mural test = new Mural("Super Awesome Mural", "hi", "bye", new Location(5.0, 10.0));
+//        DatabaseReference testRef = imageDatabase.push();
+//        testRef.setValue(test);
     }
 
     @Override
