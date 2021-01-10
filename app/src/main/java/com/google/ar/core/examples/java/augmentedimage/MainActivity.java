@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { //callback when button is clicked
-                Intent intent = new Intent(MainActivity.this, DrawActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
                 startActivity(intent); //opens drawactivity
             }
         });
