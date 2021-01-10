@@ -38,7 +38,7 @@
     <string name="msg_save_image">Are you want to exit without saving image ?</string>
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Please save image to share</string>
-<<<<<<< HEAD
+
     <string name="msg_share_image">Share Image</string>
 
     <!--    <string name="location_permission_denied">Permissions denied</string>-->
@@ -52,11 +52,10 @@
     <string name="tap_to_continue">Tap anywhere to continue</string>
     <string name="go_to_camera">Open AR camera</string>
     <string name="map_header">Explore streetARt!</string>
-=======
-    <string name="msg_share_image">Share Image</string>>
+
 
     <string name="result_image_desc">crop result</string>
     <string name="main_button_select_image">Crop Image</string>
     <string name="main_activity_desciption">Sample activity to start image cropping.\nExample: User profile activity to select avatar.</string>
->>>>>>> master
+
 </resources>

@@ -1,10 +1,10 @@
 package com.google.ar.core.examples.java.augmentedimage.models;
 
-public class Location {
+public class LocationMural {
     private double lat;
     private double lon;
 
-    public Location(double lat, double lon) {
+    public LocationMural(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
     }

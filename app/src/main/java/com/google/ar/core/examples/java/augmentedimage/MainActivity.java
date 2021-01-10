@@ -8,11 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.ar.core.Anchor;
@@ -32,7 +29,7 @@ import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
-import com.google.ar.core.examples.java.augmentedimage.models.Location;
+import com.google.ar.core.examples.java.augmentedimage.models.LocationMural;
 import com.google.ar.core.examples.java.augmentedimage.models.Mural;
 import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper;
 import com.google.ar.core.examples.java.common.helpers.FullScreenHelper;
@@ -59,9 +56,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -154,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         double lon = (double) mural.child("location").child("lon").getValue();
                         String key = mural.getKey();
 
-                        Mural mur = new Mural(key, name, refImg, arImg, new Location(lat, lon), prompt, type);
+                        Mural mur = new Mural(key, name, refImg, arImg, new LocationMural(lat, lon), prompt, type);
                         murals.add(mur);
                     }
                 }

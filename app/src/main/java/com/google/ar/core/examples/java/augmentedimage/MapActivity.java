@@ -8,21 +8,15 @@ import androidx.core.content.ContextCompat;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import android.Manifest;
 import android.content.Intent;
 
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
-import android.location.LocationListener;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,9 +24,6 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import com.bumptech.glide.Glide;
-
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,12 +37,9 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.ar.core.examples.java.augmentedimage.models.Location;
+import com.google.ar.core.examples.java.augmentedimage.models.LocationMural;
 import com.google.ar.core.examples.java.augmentedimage.models.Mural;
 
 import com.google.firebase.database.DataSnapshot;
@@ -70,7 +58,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.Toast;
 
 /**
  * An activity that displays a Google map with a marker (pin) to indicate a particular location.
@@ -328,9 +315,10 @@ public class MapActivity extends AppCompatActivity
                     while (iter.hasNext()){
                         DataSnapshot snap = iter.next();
                         DataSnapshot location = snap.child("location");
+                        Log.d(TAG, (String) snap.child("name").getValue());
                         LatLng loc = new LatLng((double)location.child("lat").getValue(), (double)location.child("lon").getValue());
 
-                        Marker marker = googleMap.addMarker(new MarkerOptions()
+                        Marker marker = map.addMarker(new MarkerOptions()
                                 .position(loc)
                                 .title(snap.child("name").getValue().toString())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
@@ -341,7 +329,7 @@ public class MapActivity extends AppCompatActivity
                         double lat = (double) snap.child("location").child("lat").getValue();
                         double lon = (double) snap.child("location").child("lon").getValue();
 
-                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon));
+                        Mural mur = new Mural(name, refImg, arImg, new LocationMural(lat, lon));
 
                         markerMap.put(marker, mur);
                     }
