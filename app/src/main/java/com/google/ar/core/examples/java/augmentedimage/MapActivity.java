@@ -5,22 +5,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import android.Manifest;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import com.bumptech.glide.Glide;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,14 +44,23 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.ar.core.examples.java.augmentedimage.models.Location;
+import com.google.ar.core.examples.java.augmentedimage.models.Mural;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 //import com.google.firebase.quickstart.database.databinding.ActivityNewPostBinding;
 //import com.google.firebase.quickstart.database.java.models.Post;
@@ -78,6 +98,10 @@ public class MapActivity extends AppCompatActivity
     private boolean locationPermissionGranted;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private HashMap<Marker, Mural> markerMap = new HashMap<>();
+
+    final long ONE_MEGABYTE = 1024 * 1024;
 
     // [START_EXCLUDE]
     // [START maps_marker_get_map_async]
@@ -229,6 +253,33 @@ public class MapActivity extends AppCompatActivity
         TextView textView = findViewById(R.id.slide_panel_title);
         textView.setText(marker.getTitle());
 
+
+        ImageView imageView = findViewById(R.id.mapImageView);
+        imageView.setVisibility(View.INVISIBLE);
+
+        Mural mural = markerMap.get(marker);
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference(mural.getRefImg());
+        GlideApp.with(this).load(storageReference).into(imageView);
+        imageView.setVisibility(View.VISIBLE);
+
+//        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//            @Override
+//            public void onSuccess(byte[] bytes) {
+//                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                imageView.setImageBitmap(augmentedImageBitmap);
+//                imageView.setVisibility(View.VISIBLE);
+//                Log.d(TAG, "Got Bitmap");
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d(TAG, e.toString());
+//                e.printStackTrace();
+//            }
+//        });
+
         // We return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
@@ -279,10 +330,20 @@ public class MapActivity extends AppCompatActivity
                         DataSnapshot location = snap.child("location");
                         LatLng loc = new LatLng((double)location.child("lat").getValue(), (double)location.child("lon").getValue());
 
-                        map.addMarker(new MarkerOptions()
+                        Marker marker = googleMap.addMarker(new MarkerOptions()
                                 .position(loc)
                                 .title(snap.child("name").getValue().toString())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+
+                        String arImg = (String) snap.child("arImg").getValue();
+                        String refImg = (String) snap.child("refImg").getValue();
+                        String name = (String) snap.child("name").getValue();
+                        double lat = (double) snap.child("location").child("lat").getValue();
+                        double lon = (double) snap.child("location").child("lon").getValue();
+
+                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon));
+
+                        markerMap.put(marker, mur);
                     }
 
                 }

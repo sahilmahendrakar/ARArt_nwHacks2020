@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,15 +30,34 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.ChangeBounds;
 import androidx.transition.TransitionManager;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.ar.core.examples.java.augmentedimage.base.BaseActivity;
 import com.google.ar.core.examples.java.augmentedimage.filters.FilterListener;
 import com.google.ar.core.examples.java.augmentedimage.filters.FilterViewAdapter;
 import com.google.ar.core.examples.java.augmentedimage.tools.EditingToolsAdapter;
 import com.google.ar.core.examples.java.augmentedimage.tools.ToolType;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.PhotoEditor;
@@ -70,10 +91,16 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
     private ConstraintSet mConstraintSet = new ConstraintSet();
     private boolean mIsFilterVisible;
 
+    StorageReference storageReference;
+    private String location;
+    private String key;
+
     @Nullable
     @VisibleForTesting
     Uri mSaveImageUri;
 
+    public static final String URI = "com.google.ar.core.examples.java.URI";
+    public static final String LOCATION = "com.google.ar.core.examples.java.LOCATION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +130,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mRvFilters.setAdapter(mFilterViewAdapter);
 
 
-        //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
-        //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
@@ -113,6 +138,22 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            location = bundle.getString("arImg");
+            key = bundle.getString("key");
+
+            storageReference = FirebaseStorage.getInstance().getReference(location);
+
+            ImageView imageView = mPhotoEditorView.getSource();
+            GlideApp.with(this /* context */)
+                    .load(storageReference)
+                    .into(imageView);
+        }
+
+
 
         //Set Image Dynamically
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
@@ -471,4 +512,128 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
             super.onBackPressed();
         }
     }
+
+    @SuppressLint("MissingPermission")
+    public void submit(View view) {
+//        if(true){
+//            if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                showLoading("Saving...");
+//                File file = new File(Environment.getExternalStorageDirectory()
+//                        + File.separator + ""
+//                        + System.currentTimeMillis() + ".png");
+//                try {
+//                    file.createNewFile();
+//
+//                    SaveSettings saveSettings = new SaveSettings.Builder()
+//                            .setClearViewsEnabled(true)
+//                            .setTransparencyEnabled(true)
+//                            .build();
+//
+//                    mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
+//                        @Override
+//                        public void onSuccess(@NonNull String imagePath) {
+//                            hideLoading();
+//                            showSnackbar("Image Saved Successfully");
+//                            mSaveImageUri = Uri.fromFile(new File(imagePath));
+//                            mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
+//                            Intent intent = new Intent(EditImageActivity.this, CropActivity.class);
+//                            intent.putExtra(URI, mSaveImageUri.toString()).putExtra(LOCATION, location);
+//                            startActivity(intent);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                            hideLoading();
+//                            showSnackbar("Failed to save Image");
+//                        }
+//                    });
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    hideLoading();
+//                    showSnackbar(e.getMessage());
+//                }
+//            }
+//        }else {
+
+            if (requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                showLoading("Saving...");
+                File file = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + ""
+                        + System.currentTimeMillis() + ".png");
+                try {
+                    file.createNewFile();
+
+                    SaveSettings saveSettings = new SaveSettings.Builder()
+                            .setClearViewsEnabled(true)
+                            .setTransparencyEnabled(true)
+                            .build();
+
+                    mPhotoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
+                        @Override
+                        public void onSuccess(@NonNull String imagePath) {
+                            hideLoading();
+                            showSnackbar("Image Saved Successfully");
+                            mSaveImageUri = Uri.fromFile(new File(imagePath));
+                            mPhotoEditorView.getSource().setImageURI(mSaveImageUri);
+
+                            ImageView imageView = mPhotoEditorView.getSource();
+                            imageView.setDrawingCacheEnabled(true);
+                            imageView.buildDrawingCache();
+                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] data = baos.toByteArray();
+                            StorageReference imageref = storageReference;
+
+                            imageref.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    String newImgUri = "arImg/" + UUID.randomUUID().toString();
+                                    StorageReference newImageRef = FirebaseStorage.getInstance().getReference().child(newImgUri);
+                                    UploadTask uploadTask = newImageRef.putFile(mSaveImageUri);
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Handle unsuccessful uploads
+                                            hideLoading();
+                                            showSnackbar("Image Save Failed");
+                                        }
+                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            newImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    FirebaseDatabase.getInstance().getReference().child("murals").child(key).child("arImg").setValue(newImgUri);
+                                                }
+                                            });
+
+                                            hideLoading();
+                                            Intent intent = new Intent(EditImageActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }
+                            });
+
+
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            hideLoading();
+                            showSnackbar("Failed to save and upload Image");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    hideLoading();
+                    showSnackbar(e.getMessage());
+                }
+            }
+        }
+    //}
+
+
+
 }
