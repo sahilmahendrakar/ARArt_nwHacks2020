@@ -1,12 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowActionBarOverlay">true</item>
+<!--        <item name="android:windowActionBarOverlay">false</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -14,15 +15,21 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/theme_teal</item>
+        <item name="android:textColor">@color/theme_offwhite</item>
+        <item name="android:fontFamily">@font/nunito_reg</item>
+    </style>
+
+<!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-    
+
     <style name="EditText">
         <item name="android:singleLine">true</item>
-        <item name="colorControlNormal">#FFFFFF</item>
-        <item name="colorControlActivated">#FFFFFF</item>
-        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="colorControlNormal">@color/theme_offwhite</item>
+        <item name="colorControlActivated">@color/theme_offwhite</item>
+        <item name="android:textColorPrimary">@color/theme_offwhite</item>
         <item name="android:textSize">14sp</item>
     </style>
 

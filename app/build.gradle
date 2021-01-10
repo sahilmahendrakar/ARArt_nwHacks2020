@@ -41,6 +41,7 @@ dependencies {
     // ARCore library
     implementation 'com.google.ar:core:1.2.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation "com.google.android.gms:play-services-location:15.0.1"
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
@@ -69,6 +70,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'

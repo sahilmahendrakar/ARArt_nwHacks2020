@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#2EC4B6</color>
+    <color name="colorPrimaryDark">#011627</color>
+    <color name="colorAccent">#E71D36</color>
+
+<!--    THEME COLORS -->
+    <color name="theme_darkblue">#011627</color>
+    <color name="theme_offwhite">#FDFFFC</color>
+    <color name="theme_teal">#2EC4B6</color>
+    <color name="theme_red">#E71D36</color>
+    <color name="theme_orange">#FF9F1C</color>
 
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>

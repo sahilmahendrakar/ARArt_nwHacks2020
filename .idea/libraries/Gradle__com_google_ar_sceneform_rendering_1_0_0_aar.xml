@@ -1,9 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.ar.sceneform:rendering:1.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a0f0c5ee3066f892b572cffd360c3d87/transformed/jetified-rendering-1.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a0f0c5ee3066f892b572cffd360c3d87/transformed/jetified-rendering-1.0.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a0f0c5ee3066f892b572cffd360c3d87/transformed/jetified-rendering-1.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/12e8770bd9044686a8df19bc59be0c85/transformed/jetified-rendering-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/12e8770bd9044686a8df19bc59be0c85/transformed/jetified-rendering-1.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/12e8770bd9044686a8df19bc59be0c85/transformed/jetified-rendering-1.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8aa75495e4f3fd216775f1aa19b17b5d/transformed/jetified-rendering-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8aa75495e4f3fd216775f1aa19b17b5d/transformed/jetified-rendering-1.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8aa75495e4f3fd216775f1aa19b17b5d/transformed/jetified-rendering-1.0.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
