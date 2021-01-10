@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.ar.core.Anchor;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean shouldConfigureSession = false;
 
-    private Button drawButton;
+    private ImageButton drawButton;
     private boolean drawButtonVisible = false;
 
     private DatabaseReference mDatabase;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawButton() {
-        drawButton = (Button) findViewById(R.id.drawButton);
+        drawButton = findViewById(R.id.drawButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { //callback when button is clicked

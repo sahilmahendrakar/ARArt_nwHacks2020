@@ -31,38 +31,47 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="dummy"
-                android:fontFamily="@font/nunito_reg"/>
+                android:text="@string/map_header"
+                android:fontFamily="@font/nunito_reg"
+                android:textSize="30sp"
+                android:textColor="@color/theme_darkblue"
+                android:gravity="center"
+                android:padding="8dp"/>
 
             <fragment
                 android:id="@+id/map"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="24dp"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:context="com.example.mapwithmarker.MapsMarkerActivity">
+<!--                android:layout_marginBottom="24dp"-->
 
                 <Button
                     android:id="@+id/button"
                     style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_marginBottom="24dp"
                     android:onClick="goCamera"
                     android:text="@string/go_to_camera"
                     android:theme="@style/AppTheme.Button"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_margin="5dp"/>
             </fragment>
         </LinearLayout>
 <!--        </FrameLayout>-->
@@ -78,8 +87,12 @@
                 android:id="@+id/slide_panel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="dummy"
-                android:fontFamily="@font/nunito_reg"/>
+                android:text="nahhh"
+                android:fontFamily="@font/nunito_reg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textSize="25sp"
+                android:textColor="@color/theme_darkblue"/>
 
             <ImageView
                 android:id="@+id/imageView"

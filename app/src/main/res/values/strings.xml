@@ -50,4 +50,5 @@
 
     <string name="tap_to_continue">Tap anywhere to continue</string>
     <string name="go_to_camera">Open AR camera</string>
+    <string name="map_header">Explore streetARt!</string>
 </resources>
