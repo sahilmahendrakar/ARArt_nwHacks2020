@@ -53,6 +53,9 @@ dependencies {
     implementation 'ja.burhanrashid52:photoeditor:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
+
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
     implementation 'com.google.firebase:firebase-database'
 

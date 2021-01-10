@@ -184,7 +184,7 @@ public class MapActivity extends AppCompatActivity
     }
 
     public void goCamera(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, EditImageActivity.class);
         startActivity(intent);
     }
 

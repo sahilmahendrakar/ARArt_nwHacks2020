@@ -39,4 +39,8 @@
     <string name="app_intent_name">PhotoEditor</string>
     <string name="msg_save_image_to_share">Please save image to share</string>
     <string name="msg_share_image">Share Image</string>>
+
+    <string name="result_image_desc">crop result</string>
+    <string name="main_button_select_image">Crop Image</string>
+    <string name="main_activity_desciption">Sample activity to start image cropping.\nExample: User profile activity to select avatar.</string>
 </resources>
