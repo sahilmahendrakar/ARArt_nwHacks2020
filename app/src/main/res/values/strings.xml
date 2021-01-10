@@ -40,11 +40,14 @@
     <string name="msg_save_image_to_share">Please save image to share</string>
     <string name="msg_share_image">Share Image</string>
 
-<!--    <string name="location_permission_denied">Permissions denied</string>-->
-<!--    <string name="permission_required_toast">Location permissions required</string>-->
-<!--    <string name="permission_rationale_location">We need your location to show you the nearest ARt!</string>-->
+    <!--    <string name="location_permission_denied">Permissions denied</string>-->
+    <!--    <string name="permission_required_toast">Location permissions required</string>-->
+    <!--    <string name="permission_rationale_location">We need your location to show you the nearest ARt!</string>-->
 
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
     <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Location permission is required for this demo.</string>
+
+    <string name="tap_to_continue">Tap anywhere to continue</string>
+    <string name="go_to_camera">Open AR camera</string>
 </resources>
