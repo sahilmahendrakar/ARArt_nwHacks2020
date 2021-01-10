@@ -57,7 +57,7 @@
                 android:id="@+id/slide_panel_title"
                 android:text="dummy"/>
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/mapImageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
