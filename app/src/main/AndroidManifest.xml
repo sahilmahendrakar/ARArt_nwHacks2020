@@ -4,6 +4,12 @@
     package="com.google.ar.core.examples.java.augmentedimage">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
+
+    <!-- To request foreground location access, declare one of these permissions. -->
+    <!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <!--
  This tag indicates that this application requires ARCore.  This results in the application
          only being visible in the Google Play Store on devices that support ARCore.
@@ -78,6 +84,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps_api_key" />
+
+<!--        <service-->
+<!--            android:name=".LocationService"-->
+<!--            android:foregroundServiceType="location">-->
+<!--        &lt;!&ndash; Any inner elements would go here. &ndash;&gt;-->
+<!--        </service>-->
     </application>
 
 </manifest>

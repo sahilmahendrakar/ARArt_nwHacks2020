@@ -1,16 +1,24 @@
 package com.google.ar.core.examples.java.augmentedimage;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Iterator;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +45,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.Toast;
 
 /**
  * An activity that displays a Google map with a marker (pin) to indicate a particular location.
@@ -43,10 +53,21 @@ import android.view.animation.Interpolator;
 // [START maps_marker_on_map_ready]
 public class MapActivity extends AppCompatActivity
         implements OnMapReadyCallback,
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnMyLocationClickListener,
         OnMarkerClickListener {
 
     private DatabaseReference mDatabase;
     private static final String TAG = MapActivity.class.getSimpleName();
+//    private LatLng defaultLocation; //= new LatLng(40.8075, -73.9626);
+    private Location mCurrentLocation = new Location("");
+    private static final int DEFAULT_ZOOM = 15;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private boolean permissionDenied = false;
+    private GoogleMap map;
+    private boolean requestingLocationUpdates = true;
+
+    private FusedLocationProviderClient fusedLocationClient;
 
     // [START_EXCLUDE]
     // [START maps_marker_get_map_async]
@@ -62,6 +83,12 @@ public class MapActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mCurrentLocation.setLatitude(40.8075);
+        mCurrentLocation.setLongitude(-73.9626);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
     // [END maps_marker_get_map_async]
     // [END_EXCLUDE]
@@ -81,26 +108,40 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // [START_EXCLUDE silent]
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
         // [END_EXCLUDE]
-        LatLng sydney = new LatLng(40.807537, -73.96257);
-        createMarkers(googleMap);
+        map = googleMap;
+        createMarkers();
 
-        googleMap.setOnMarkerClickListener(this);
+        map.setOnMarkerClickListener(this);
+        map.setOnMyLocationButtonClickListener(this);
+        map.setOnMyLocationClickListener(this);
 
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, location -> {
+//                    // Got last known location. In some rare situations this can be null.
+////                    if (location != null) {
+//                        // Logic to handle location object
+//                        defaultLocation = new LatLng(location.getLatitude(), location.getLongitude());
+////                    }
+//                });
+
+        LatLng loc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, DEFAULT_ZOOM));
+
+        enableMyLocation();
         // [END_EXCLUDE]
     }
     // [END maps_marker_on_map_ready_add_marker]
-
-//    public void clickMarker(final Marker marker) {
-//        final SlidingUpPanelLayout slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-//        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-//
-//        TextView textView = findViewById(R.id.slide_panel);
-//        textView.setText(marker.getTitle());
-//    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
@@ -145,7 +186,7 @@ public class MapActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private void createMarkers(GoogleMap googleMap) {
+    private void createMarkers() {
         DatabaseReference imageDatabase = mDatabase.child("murals");
 
         imageDatabase.addValueEventListener(new ValueEventListener() {
@@ -159,7 +200,7 @@ public class MapActivity extends AppCompatActivity
                         DataSnapshot location = snap.child("location");
                         LatLng loc = new LatLng((double)location.child("lat").getValue(), (double)location.child("lon").getValue());
 
-                        googleMap.addMarker(new MarkerOptions()
+                        map.addMarker(new MarkerOptions()
                                 .position(loc)
                                 .title(snap.child("name").getValue().toString())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
@@ -179,6 +220,90 @@ public class MapActivity extends AppCompatActivity
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
+    }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    private void enableMyLocation() {
+//         [START maps_check_location_permission]
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (map != null) {
+                map.setMyLocationEnabled(true);
+            }
+        } else {
+            // Permission to access the location is missing. Show rationale and request permission
+            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        }
+        // [END maps_check_location_permission]
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (requestingLocationUpdates) {
+//            startLocationUpdates();
+//        }
+//    }
+
+//    private void startLocationUpdates() {
+//        fusedLocationClient.requestLocationUpdates(locationRequest,
+//                locationCallback,
+//                Looper.getMainLooper());
+//    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        //Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    }
+
+    // [START maps_check_location_permission_result]
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            enableMyLocation();
+        } else {
+            // Permission was denied. Display an error message
+            // [START_EXCLUDE]
+            // Display the missing permission error dialog when the fragments resume.
+            permissionDenied = true;
+            // [END_EXCLUDE]
+        }
+    }
+    // [END maps_check_location_permission_result]
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (permissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            permissionDenied = false;
+        }
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 }
 // [END maps_marker_on_map_ready]
