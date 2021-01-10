@@ -149,16 +149,7 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if(bundle != null) {
-            String location = bundle.getString("arImg");
 
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference(location);
-
-            ImageView imageView = mPhotoEditorView.getSource();
-            GlideApp.with(this /* context */)
-                    .load(storageReference)
-                    .into(imageView);
-        }
 
 
 

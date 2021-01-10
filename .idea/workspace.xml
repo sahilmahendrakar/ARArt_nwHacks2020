@@ -39,10 +39,9 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.8/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/google/ar/core/examples/java/augmentedimage/CropActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/google/ar/core/examples/java/augmentedimage/CropActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_crop.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_crop.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/assets/model.sfb" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/assets/model.sfb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/google/ar/core/examples/java/augmentedimage/EditImageActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/google/ar/core/examples/java/augmentedimage/EditImageActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,28 +237,28 @@
     <state x="4537" y="374" key="AndroidCreateResourceFileDialog/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610239101626" />
     <state x="1092" y="608" key="AndroidCreateResourceFileDialog/3008.684.1440.900/-1920.467.1920.1080/0.0.3008.1692@0.0.3008.1692" timestamp="1610139263332" />
     <state x="1092" y="594" key="AndroidCreateResourceFileDialog/3008.707.1440.877/-1920.490.1920.1057/0.23.3008.1589@0.23.3008.1589" timestamp="1610220354166" />
-    <state width="931" height="326" key="GridCell.Tab.0.bottom" timestamp="1610300396141">
+    <state width="931" height="326" key="GridCell.Tab.0.bottom" timestamp="1610304296274">
       <screen x="3840" y="0" width="1920" height="1040" />
     </state>
-    <state width="931" height="326" key="GridCell.Tab.0.bottom/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610300396141" />
+    <state width="931" height="326" key="GridCell.Tab.0.bottom/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610304296274" />
     <state width="2966" height="466" key="GridCell.Tab.0.bottom/3008.707.1440.806/-1920.490.1920.1057/0.23.3008.1669@0.23.3008.1669" timestamp="1610223315683" />
     <state width="2966" height="423" key="GridCell.Tab.0.bottom/3008.707.1440.877/-1920.490.1920.1057/0.23.3008.1589@0.23.3008.1589" timestamp="1610220706498" />
-    <state width="931" height="326" key="GridCell.Tab.0.center" timestamp="1610300396141">
+    <state width="931" height="326" key="GridCell.Tab.0.center" timestamp="1610304296274">
       <screen x="3840" y="0" width="1920" height="1040" />
     </state>
-    <state width="931" height="326" key="GridCell.Tab.0.center/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610300396141" />
+    <state width="931" height="326" key="GridCell.Tab.0.center/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610304296274" />
     <state width="2966" height="466" key="GridCell.Tab.0.center/3008.707.1440.806/-1920.490.1920.1057/0.23.3008.1669@0.23.3008.1669" timestamp="1610223315680" />
     <state width="2966" height="423" key="GridCell.Tab.0.center/3008.707.1440.877/-1920.490.1920.1057/0.23.3008.1589@0.23.3008.1589" timestamp="1610220706496" />
-    <state width="931" height="326" key="GridCell.Tab.0.left" timestamp="1610300396141">
+    <state width="931" height="326" key="GridCell.Tab.0.left" timestamp="1610304296274">
       <screen x="3840" y="0" width="1920" height="1040" />
     </state>
-    <state width="931" height="326" key="GridCell.Tab.0.left/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610300396141" />
+    <state width="931" height="326" key="GridCell.Tab.0.left/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610304296274" />
     <state width="2966" height="466" key="GridCell.Tab.0.left/3008.707.1440.806/-1920.490.1920.1057/0.23.3008.1669@0.23.3008.1669" timestamp="1610223315679" />
     <state width="2966" height="423" key="GridCell.Tab.0.left/3008.707.1440.877/-1920.490.1920.1057/0.23.3008.1589@0.23.3008.1589" timestamp="1610220706493" />
-    <state width="931" height="326" key="GridCell.Tab.0.right" timestamp="1610300396141">
+    <state width="931" height="326" key="GridCell.Tab.0.right" timestamp="1610304296274">
       <screen x="3840" y="0" width="1920" height="1040" />
     </state>
-    <state width="931" height="326" key="GridCell.Tab.0.right/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610300396141" />
+    <state width="931" height="326" key="GridCell.Tab.0.right/0.0.1536.824/3840.0.1920.1040@3840.0.1920.1040" timestamp="1610304296274" />
     <state width="2966" height="466" key="GridCell.Tab.0.right/3008.707.1440.806/-1920.490.1920.1057/0.23.3008.1669@0.23.3008.1669" timestamp="1610223315682" />
     <state width="2966" height="423" key="GridCell.Tab.0.right/3008.707.1440.877/-1920.490.1920.1057/0.23.3008.1589@0.23.3008.1589" timestamp="1610220706497" />
     <state x="4481" y="298" key="SettingsEditor" timestamp="1610238675689">
