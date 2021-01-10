@@ -10,10 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -142,10 +144,12 @@ public class MainActivity extends AppCompatActivity {
                         String arImg = (String) mural.child("arImg").getValue();
                         String refImg = (String) mural.child("refImg").getValue();
                         String name = (String) mural.child("name").getValue();
+                        String prompt = (String) mural.child("prompt").getValue();
+                        String type = (String) mural.child("type").getValue();
                         double lat = (double) mural.child("location").child("lat").getValue();
                         double lon = (double) mural.child("location").child("lon").getValue();
 
-                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon));
+                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon), prompt, type);
                         murals.add(mur);
                     }
                 }
@@ -294,7 +298,10 @@ public class MainActivity extends AppCompatActivity {
 
                 for(Mural mural : murals) {
                     if (augmentedImage.getName().equals(mural.getRefImg())) {
-                        foundMatch = true;
+
+                        if(!mural.getType().contains("uneditable")) {
+                            foundMatch = true;
+                        }
 
                         drawIntent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("arImg", mural.getArImg());
 //                    AugmentedImageNode node = new AugmentedImageNode(this, "model.sfb");
@@ -308,17 +315,26 @@ public class MainActivity extends AppCompatActivity {
                         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.MATCH_PARENT));
 
+                        TextView promptView = new TextView(this);
+                        promptView.setLayoutParams(new LinearLayout.LayoutParams(500, LinearLayout.LayoutParams.WRAP_CONTENT));
+                        //promptView.set
+                        promptView.setText(mural.getPrompt());
+                        promptView.setGravity(Gravity.CENTER);
+
                         ImageView imageView = new ImageView(this);
 
                         //imageView.setImageResource(R.drawable.delorean);
                         imageView.setLayoutParams(new LinearLayout.LayoutParams(500,
                                 500));
 
+                        linearLayout.addView(promptView);
                         linearLayout.addView(imageView);
+
 
                         StorageReference storageReference = mImages.getReference(mural.getArImg());
                         GlideApp.with(this).load(storageReference).into(imageView);
                         renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), linearLayout);
+                        //renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), R.layout.ar_test);
 
 //                        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 //                            @Override
@@ -358,6 +374,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderObject(ArFragment fragment, Anchor anchor, View view) {
         ViewRenderable.builder().setView(this, view).build().thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable));
+    }
+
+    private void renderObject(ArFragment fragment, Anchor anchor, int model) {
+        ViewRenderable.builder().setView(this, model).build().thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable));
     }
 
 

@@ -8,6 +8,18 @@ public class Mural {
     String arImg;
     Location location;
 
+    String prompt;
+    String type;
+
+    public Mural(String name, String refImg, String arImg, Location location, String prompt, String type) {
+        this.name = name;
+        this.refImg = refImg;
+        this.arImg = arImg;
+        this.location = location;
+        this.prompt = prompt;
+        this.type = type;
+    }
+
     public Mural(String name, String refImg, String arImg, Location location) {
         this.name = name;
         this.refImg = refImg;
@@ -45,5 +57,21 @@ public class Mural {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

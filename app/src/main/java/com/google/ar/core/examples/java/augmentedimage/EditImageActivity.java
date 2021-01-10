@@ -106,11 +106,8 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         super.onCreate(savedInstanceState);
         makeFullScreen();
         setContentView(R.layout.activity_edit_image);
-        storage  = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-        initViews();
 
-        location = "images/hello.jpg";
+        initViews();
 
         handleIntentImage(mPhotoEditorView.getSource());
 
@@ -132,12 +129,6 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
         mRvFilters.setAdapter(mFilterViewAdapter);
 
 
-        //Typeface mTextRobotoTf = ResourcesCompat.getFont(this, R.font.roboto_medium);
-        //Typeface mEmojiTypeFace = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
-        ImageView imageView = mPhotoEditorView.getSource();
-        GlideApp.with(this /* context */)
-                .load(storageRef.child(location))
-                .into(imageView);
 
         mPhotoEditor = new PhotoEditor.Builder(this, mPhotoEditorView)
                 .setPinchTextScalable(true) // set flag to make text scalable when pinch
