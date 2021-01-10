@@ -52,6 +52,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
     implementation 'com.google.firebase:firebase-database'
+
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'

@@ -32,7 +32,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <!--
  This tag indicates that this application requires ARCore.  This results in the Google Play
              Store downloading and installing ARCore along with the application.
