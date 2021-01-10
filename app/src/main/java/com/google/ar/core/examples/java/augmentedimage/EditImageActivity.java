@@ -40,6 +40,8 @@ import com.google.ar.core.examples.java.augmentedimage.filters.FilterViewAdapter
 import com.google.ar.core.examples.java.augmentedimage.tools.EditingToolsAdapter;
 import com.google.ar.core.examples.java.augmentedimage.tools.ToolType;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -144,6 +146,21 @@ public class EditImageActivity extends BaseActivity implements OnPhotoEditorList
                 .build(); // build photo editor sdk
 
         mPhotoEditor.setOnPhotoEditorListener(this);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle != null) {
+            String location = bundle.getString("arImg");
+
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference(location);
+
+            ImageView imageView = mPhotoEditorView.getSource();
+            GlideApp.with(this /* context */)
+                    .load(storageReference)
+                    .into(imageView);
+        }
+
+
 
         //Set Image Dynamically
         // mPhotoEditorView.getSource().setImageResource(R.drawable.color_palette);
