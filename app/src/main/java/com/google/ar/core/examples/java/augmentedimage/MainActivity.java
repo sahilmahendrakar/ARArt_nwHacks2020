@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseStorage mImages;
 
-    private ArrayList<Mural> murals = new ArrayList<>();
+    private ArrayList<Mural> murals;
 
     private String currRefImg = null;
 
@@ -114,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
 
         setupDrawButton();
 
-        setupStorage();
-
-        setupDatabase();
+//        setupStorage();
+//
+//        setupDatabase();
 
     }
 
@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDatabase() {
+        murals = new ArrayList<>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         DatabaseReference imageDatabase = mDatabase.child("murals");
 
@@ -148,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
                         String type = (String) mural.child("type").getValue();
                         double lat = (double) mural.child("location").child("lat").getValue();
                         double lon = (double) mural.child("location").child("lon").getValue();
+                        String key = mural.getKey();
 
-                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon), prompt, type);
+                        Mural mur = new Mural(key, name, refImg, arImg, new Location(lat, lon), prompt, type);
                         murals.add(mur);
                     }
                 }
@@ -182,6 +184,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        setupStorage();
+
+        setupDatabase();
 
         if (session == null) {
             Exception exception = null;
@@ -303,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                             foundMatch = true;
                         }
 
-                        drawIntent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("arImg", mural.getArImg());
+                        drawIntent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("arImg", mural.getArImg()).putExtra("type", mural.getType()).putExtra("key", mural.getKey());
 //                    AugmentedImageNode node = new AugmentedImageNode(this, "model.sfb");
 //                    node.setImage(augmentedImage);
 //                    arSceneView.getScene().addChild(node);
