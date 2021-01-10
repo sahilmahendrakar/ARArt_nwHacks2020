@@ -11,6 +11,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,7 +56,8 @@ public class MapActivity extends AppCompatActivity
         implements OnMapReadyCallback,
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
-        OnMarkerClickListener {
+        OnMarkerClickListener,
+        LocationListener {
 
     private DatabaseReference mDatabase;
     private static final String TAG = MapActivity.class.getSimpleName();
@@ -135,13 +137,18 @@ public class MapActivity extends AppCompatActivity
 ////                    }
 //                });
 
-        LatLng loc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, DEFAULT_ZOOM));
+        updateMapCamera();
 
         enableMyLocation();
+
         // [END_EXCLUDE]
     }
     // [END maps_marker_on_map_ready_add_marker]
+
+    private void updateMapCamera() {
+        LatLng loc = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, DEFAULT_ZOOM));
+    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
@@ -184,6 +191,31 @@ public class MapActivity extends AppCompatActivity
     public void goCamera(View view) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mCurrentLocation = location;
+//                updateMapCamera();
+//                double latitude=location.getLatitude();
+//                double longitude=location.getLongitude();
+//                String msg="New Latitude: "+latitude + "New Longitude: "+longitude;
+////                Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     private void createMarkers() {
