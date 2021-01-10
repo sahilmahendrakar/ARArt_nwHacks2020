@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String currRefImg = null;
 
+    private Intent drawIntent = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         arSceneView = arFragment.getArSceneView();
 
 //        arSceneView = findViewById(R.id.surfaceview);
+
+        drawIntent = new Intent(MainActivity.this, EditImageActivity.class);
 
         installRequested = false;
 
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { //callback when button is clicked
-                Intent intent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("refImg", currRefImg);
+                Intent intent = drawIntent;
                 startActivity(intent); //opens drawactivity
             }
         });
@@ -291,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                 for(Mural mural : murals) {
                     if (augmentedImage.getName().equals(mural.getRefImg())) {
                         foundMatch = true;
+
+                        drawIntent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("arImg", mural.getArImg());
 //                    AugmentedImageNode node = new AugmentedImageNode(this, "model.sfb");
 //                    node.setImage(augmentedImage);
 //                    arSceneView.getScene().addChild(node);
@@ -311,25 +317,26 @@ public class MainActivity extends AppCompatActivity {
                         linearLayout.addView(imageView);
 
                         StorageReference storageReference = mImages.getReference(mural.getArImg());
-                        //Glide.with(this).load(storageReference).into(imageView);
+                        GlideApp.with(this).load(storageReference).into(imageView);
+                        renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), linearLayout);
 
-                        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                imageView.setImageBitmap(augmentedImageBitmap);
-                                Log.d(TAG, "Got Bitmap");
-
-                                renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), linearLayout);
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, e.toString());
-                                e.printStackTrace();
-                            }
-                        });
+//                        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                            @Override
+//                            public void onSuccess(byte[] bytes) {
+//                                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                imageView.setImageBitmap(augmentedImageBitmap);
+//                                Log.d(TAG, "Got Bitmap");
+//
+//                                renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), linearLayout);
+//
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.d(TAG, e.toString());
+//                                e.printStackTrace();
+//                            }
+//                        });
 
                     }
                 }

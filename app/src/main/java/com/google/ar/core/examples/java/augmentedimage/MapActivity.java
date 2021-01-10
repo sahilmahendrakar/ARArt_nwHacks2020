@@ -157,23 +157,25 @@ public class MapActivity extends AppCompatActivity
         Mural mural = markerMap.get(marker);
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference(mural.getRefImg());
+        GlideApp.with(this).load(storageReference).into(imageView);
+        imageView.setVisibility(View.VISIBLE);
 
-        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                imageView.setImageBitmap(augmentedImageBitmap);
-                imageView.setVisibility(View.VISIBLE);
-                Log.d(TAG, "Got Bitmap");
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, e.toString());
-                e.printStackTrace();
-            }
-        });
+//        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//            @Override
+//            public void onSuccess(byte[] bytes) {
+//                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                imageView.setImageBitmap(augmentedImageBitmap);
+//                imageView.setVisibility(View.VISIBLE);
+//                Log.d(TAG, "Got Bitmap");
+//
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d(TAG, e.toString());
+//                e.printStackTrace();
+//            }
+//        });
 
         // We return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
