@@ -7,11 +7,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.AugmentedImage;
@@ -44,13 +51,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 //TODO: Implement DatabaseReference and StorageReference, load all items in database reference, database reference should hold uri of corresponding image in firebase storage
 public class MainActivity extends AppCompatActivity {
+    final long ONE_MEGABYTE = 1024 * 1024;
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Rendering. The Renderers are created here, and initialized when the GL surface is created.
@@ -68,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean drawButtonVisible = false;
 
     private DatabaseReference mDatabase;
+
+    private FirebaseStorage mImages;
+
+    private ArrayList<Mural> murals = new ArrayList<>();
+
+    private String currRefImg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
         setupDrawButton();
 
+        setupStorage();
+
         setupDatabase();
+
     }
 
     private void setupDrawButton() {
@@ -97,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { //callback when button is clicked
-                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditImageActivity.class).putExtra("refImg", currRefImg);
                 startActivity(intent); //opens drawactivity
             }
         });
@@ -111,8 +133,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Log.d(TAG, "Database value: " + snapshot.getValue());
+                if(snapshot.hasChildren()) {
+                    for(DataSnapshot mural : snapshot.getChildren()) {
+                        String arImg = (String) mural.child("arImg").getValue();
+                        String refImg = (String) mural.child("refImg").getValue();
+                        String name = (String) mural.child("name").getValue();
+                        double lat = (double) mural.child("location").child("lat").getValue();
+                        double lon = (double) mural.child("location").child("lon").getValue();
 
+                        Mural mur = new Mural(name, refImg, arImg, new Location(lat, lon));
+                        murals.add(mur);
+                    }
+                }
+                for(Mural mural : murals) {
+                    Log.d(TAG, "Mural Name: " + mural.getName());
+                }
 
+                Log.d(TAG, "Running configure session from database");
+                configureSession();
+                shouldConfigureSession = false;
+                arSceneView.setupSession(session);
             }
 
             @Override
@@ -125,6 +165,10 @@ public class MainActivity extends AppCompatActivity {
 //        Mural test = new Mural("Super Awesome Mural", "hi", "bye", new Location(5.0, 10.0));
 //        DatabaseReference testRef = imageDatabase.push();
 //        testRef.setValue(test);
+    }
+
+    private void setupStorage() {
+        mImages = FirebaseStorage.getInstance();
     }
 
     @Override
@@ -236,34 +280,77 @@ public class MainActivity extends AppCompatActivity {
         Collection<AugmentedImage> updatedAugmentedImages =
                 frame.getUpdatedTrackables(AugmentedImage.class);
 
+        boolean foundMatch = false;
+
         for (AugmentedImage augmentedImage : updatedAugmentedImages) {
             if (augmentedImage.getTrackingState() == TrackingState.TRACKING) {
+                //for mural if augmented.equals mural.getname
                 // Check camera image matches our reference image
-                if (augmentedImage.getName().equals("delorean")) {
+
+
+                for(Mural mural : murals) {
+                    if (augmentedImage.getName().equals(mural.getRefImg())) {
+                        foundMatch = true;
 //                    AugmentedImageNode node = new AugmentedImageNode(this, "model.sfb");
 //                    node.setImage(augmentedImage);
 //                    arSceneView.getScene().addChild(node);
 
-                    renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), R.layout.ar_test);
+                        //LinearLayOut Setup
+                        LinearLayout linearLayout = new LinearLayout(this);
+                        linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-                    if(!drawButtonVisible) {
-                        drawButton.setVisibility(View.VISIBLE);
-                        drawButtonVisible = true;
-                    }
+                        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT));
 
-                } else {
-                    if(drawButtonVisible) {
-                        drawButton.setVisibility(View.GONE);
-                        drawButtonVisible = false;
+                        ImageView imageView = new ImageView(this);
+
+                        //imageView.setImageResource(R.drawable.delorean);
+                        imageView.setLayoutParams(new LinearLayout.LayoutParams(500,
+                                500));
+
+                        linearLayout.addView(imageView);
+
+                        StorageReference storageReference = mImages.getReference(mural.getArImg());
+                        //Glide.with(this).load(storageReference).into(imageView);
+
+                        storageReference.getBytes(2 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                imageView.setImageBitmap(augmentedImageBitmap);
+                                Log.d(TAG, "Got Bitmap");
+
+                                renderObject(arFragment, augmentedImage.createAnchor(augmentedImage.getCenterPose()), linearLayout);
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                                e.printStackTrace();
+                            }
+                        });
+
                     }
                 }
-
             }
         }
+
+        //Note draw button doesn't go away after initially appearing
+            if (foundMatch) {
+                if (!drawButtonVisible) {
+                    drawButton.setVisibility(View.VISIBLE);
+                    drawButtonVisible = true;
+                }
+            }
     }
 
-    private void renderObject(ArFragment fragment, Anchor anchor, int model) {
-        ViewRenderable.builder().setView(this, model).build().thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable));
+//    private void renderObject(ArFragment fragment, Anchor anchor, int model) {
+//        ViewRenderable.builder().setView(this, model).build().thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable));
+//    }
+
+    private void renderObject(ArFragment fragment, Anchor anchor, View view) {
+        ViewRenderable.builder().setView(this, view).build().thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable));
     }
 
 
@@ -279,35 +366,82 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureSession() {
+        Log.d(TAG, "In configure session");
         Config config = new Config(session);
         if (!setupAugmentedImageDb(config)) {
             messageSnackbarHelper.showError(this, "Could not setup augmented image database");
         }
-        config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
-        session.configure(config);
+
     }
 
     private boolean setupAugmentedImageDb(Config config) {
         AugmentedImageDatabase augmentedImageDatabase;
+        augmentedImageDatabase = new AugmentedImageDatabase(session);
 
-        Bitmap augmentedImageBitmap = loadAugmentedImage();
-        if (augmentedImageBitmap == null) {
-            return false;
+
+
+        Iterator<Mural> iter = murals.iterator();
+        while(iter.hasNext()) {
+            Log.d(TAG, "In iter");
+            Mural mural = iter.next();
+            StorageReference imageRef = mImages.getReference(mural.getRefImg());
+            imageRef.getBytes(2*ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap augmentedImageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                    if (augmentedImageBitmap == null) {
+//                        return false;
+//                    }
+                    Log.d(TAG, "Adding image to augmented database: " + mural.getRefImg());
+                    augmentedImageDatabase.addImage(mural.getRefImg(), augmentedImageBitmap);
+
+//                    DisplayMetrics dm = new DisplayMetrics();
+//                    getWindowManager().getDefaultDisplay().getMetrics(dm);
+//                    ImageView imageView = findViewById(R.id.imageView);
+//                    imageView.setMinimumHeight(dm.heightPixels);
+//                    imageView.setMinimumWidth(dm.widthPixels);
+//                    imageView.setImageBitmap(augmentedImageBitmap);
+
+                    if(!iter.hasNext()) {
+                        Log.d(TAG, "Setting image database");
+                        config.setAugmentedImageDatabase(augmentedImageDatabase);
+                        config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
+                        session.configure(config);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, e.toString());
+                    e.printStackTrace();
+                }
+            });
         }
 
-        augmentedImageDatabase = new AugmentedImageDatabase(session);
-        augmentedImageDatabase.addImage("delorean", augmentedImageBitmap);
-
-        config.setAugmentedImageDatabase(augmentedImageDatabase);
         return true;
     }
 
-    private Bitmap loadAugmentedImage() {
-        try (InputStream is = getAssets().open("delorean.jpg")) {
-            return BitmapFactory.decodeStream(is);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
-        }
-        return null;
-    }
+//    private boolean setupAugmentedImageDb(Config config) {
+//        AugmentedImageDatabase augmentedImageDatabase;
+//
+//        Bitmap augmentedImageBitmap = loadAugmentedImage();
+//        if (augmentedImageBitmap == null) {
+//            return false;
+//        }
+//
+//        augmentedImageDatabase = new AugmentedImageDatabase(session);
+//        augmentedImageDatabase.addImage("delorean", augmentedImageBitmap);
+//
+//        config.setAugmentedImageDatabase(augmentedImageDatabase);
+//        return true;
+//    }
+//
+//    private Bitmap loadAugmentedImage() {
+//        try (InputStream is = getAssets().open("delorean.jpg")) {
+//            return BitmapFactory.decodeStream(is);
+//        } catch (IOException e) {
+//            Log.e(TAG, "IO exception loading augmented image bitmap.", e);
+//        }
+//        return null;
+//    }
 }
